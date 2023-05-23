@@ -1,0 +1,31 @@
+- name: Update Nextcloud
+  hosts: nextcloud_server
+  become: true
+
+  tasks:
+    - name: Stoping docker compose
+      shell: |
+        docker compose down
+      args:
+        chdir: /app/nextcloud
+
+    - name: Updating Nextcloud version in docker compose
+      lineinfile:
+        path: /app/nextcloud/docker-compose.yml
+        regexp: '^(\s+image:\s*)"nextcloud:.*"'
+        line: '\g<1>"nextcloud:25.0-apache"'
+        backrefs: yes
+
+    - name: Recreate and restart Nextcloud
+      command: docker compose up -d
+      args:
+        chdir: /app/nextcloud
+
+    - name: Restarting Nginx
+      become: true
+      service:
+        name: nginx
+        state: restarted
+
+
+
