@@ -1,23 +1,25 @@
-# Обновление Nextcloud при помощи Ansible
-*Все последующие действия выполняются с учётом того, что Вы установили и настроили Nextcloud с использованием Docker и docker compose*
-*. Небольшой пример как это можно сделать https://github.com/PashaShredder/nginx-proxy-nextcloud-docker-postgresql-redis*
-*. Мы будем использовать данный образец в нашем примере*
+# Updating Nextcloud using Ansible
 
-# Установка Ansible https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
-*После предварительной установки приступаем к настройке*
-*Переходим в папке*
+*Please note that the following steps assume you have already installed and configured Nextcloud using Docker and docker-compose.*
+*. Here's a small example of how you can set it up https://github.com/PashaShredder/nginx-proxy-nextcloud-docker-postgresql-redis*
+*. We will use this sample setup in our example*
+
+# Install Ansible
+ https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
+*After pre-installation, proceed to setup*
+*Go to folder*
 ```bash
 cd /etc/ansible/
 ```
-*Редактируем файл* **hosts** 
+*Edit file* **hosts** 
 ```bash
-sudo nano hosts # используйте любой удобный для Вас редактор(Я буду в дальнейшем использовать nano)
+sudo nano hosts # use any editor convenient for you (I will use nano in the future)
 ```
 ```bash
 [nextcloud_server] # your group name
 <your_server_name> # Client, Ubuntu, etc.
 ```
-*Переходим в папку и создаём там файл для нашей конфигурации. Имя можно выбрать любое но его же нужно будет указать в файле* **hosts** и **update.yml**
+*Go to the folder and create a file there for our configuration. You can choose any name, but it will also need to be specified in the file * **hosts** and **update.yml**
 ```bash
 cd /etc/ansible/group_vars
 ```
@@ -29,7 +31,7 @@ ansible_host: <your_server_ip>
 ansible_user: <server_user>
 ansible_ssh_private_key_file: /path/to/.ssh/<your_ssh_key>
 ```
-*Проверим корректность конфигурации*
+*Check if the configuration is correct*
 ```bash
 ansible all -m ping
 ```
@@ -39,10 +41,10 @@ ansible all -m ping
         "discovered_interpreter_python": "/usr/bin/python3"
     },
     "changed": false,
-    "ping": "pong" # данный ответ говорит нам что всё ОК, можем продолжать. В противном случае проверьте конфигурацию ansible
+    "ping": "pong" # This answer tells us that everything is OK, we can continue. Otherwise check your ansible config
 }
 ```
-*Вернёмся обратно и создадим наш playbook*
+*Let's go back and create our playbook*
 ```bash
 cd /etc/ansible
 ```
@@ -79,10 +81,10 @@ sudo nano update.yml
         name: nginx
         state: restarted
 ```
-*Далее запустим наш playbook с учётом того что docker compose работает и nextloud сконфигурирован и доступен для использования*
+*Next, let's run our playbook, taking into account that docker compose is running and nextloud is configured and available for use*
 
 ```bash
 sudo ansible-playbook update.yml -i hosts
 ```
-*После успешного завершения работы Ansible переходим в браузер(ждём какое-то время до полной перезагрузки) на Ваш nextcloud  и завершаем установку*
+*After the successful completion of Ansible, go to the browser (wait for some time until a full reboot) to your nextcloud and complete the installation*
 
